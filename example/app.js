@@ -1,5 +1,5 @@
 var express = require('express');
-var nodeExcel = require('../index');
+var nodeExcel = require('excel-export');
 var app = express();
 
 app.get('/Excel', function(req, res){
