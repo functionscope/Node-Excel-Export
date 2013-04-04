@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha test/main"
   },
-  "repository": "",
+  "repository": "https://github.com/functionscope/Node-Excel-Export",
   "keywords": [
     "Excel",
     "xlsx"

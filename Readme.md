@@ -1,6 +1,6 @@
 # excel-export #
 
-A simple module for exporting data set to Excel xlsx file.
+A simple node.js module for exporting data set to Excel xlsx file.
 
 ## Using excel-export ##
 Setup configuration object before passing in the execute method. **cols** is an array for column definition. Column definition should have caption and type properties. Supported valid types are string, date, bool and number.  **rows** is the data to be export. It is an Array of Array (row). Each row should be the same length of cols. 
