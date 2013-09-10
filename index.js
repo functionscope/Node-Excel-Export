@@ -35,38 +35,44 @@ exports.execute = function(config){
 	
 	shareStrings = new Array();
 	//first row for column caption
-	row = '<x:row r="1" spans="1:'+ cols.length + '">';
-	for (var k=0; k < cols.length; k++)
+	row = ['<x:row r="1" spans="1:', cols.length , '">'].join('');
+  var k;
+	for (k=0; k < cols.length; k++)
 	{
-		row = row + addStringCol(getColumnLetter(k+1)+1, cols[k].caption);
+		row = [row,  addStringCol(getColumnLetter(k+1)+1, cols[k].caption)].join('');
 	}
-	row = row + '</x:row>';
-	rows = rows + row;	
+	row = [row , '</x:row>'].join('');
+	rows = [rows , row].join('');	
 	
 	//fill in data
-	for (var i=0;i<data.length;i++)
+  var i, j, r, cellData;
+	for (i=0;i<data.length;i++)
 	{
-		var r = data[i], currRow = i+2;
-		row = '<x:row r="'+currRow+'" spans="1:'+ cols.length + '">';
-		for (var j=0; j<cols.length; j++)
+		r = data[i], currRow = i+2;
+		row = ['<x:row r="',currRow,'" spans="1:', cols.length , '">'].join('');
+		for (j=0; j<cols.length; j++)
 		{
+      cellData = r[j];
+      if (typeof cols[j].beforeCellWrite === 'function')
+        cellData = cols[j].beforeCellWrite(r, cellData);    
+    
 			switch(cols[j].type)
 			{
 				case 'number':
-					row = row + addNumberCol(getColumnLetter(j+1)+currRow, r[j]);
+					row = [row, addNumberCol(getColumnLetter(j+1)+currRow, cellData)].join('');
 					break;
 				case 'date':
-					row = row + addDateCol(getColumnLetter(j+1)+currRow, r[j]);
+					row = [row, addDateCol(getColumnLetter(j+1)+currRow, cellData)].join('');
 					break;
 				case 'bool':
-					row = row + addBoolCol(getColumnLetter(j+1)+currRow, r[j]);
+					row = [row, addBoolCol(getColumnLetter(j+1)+currRow, cellData)].join('');
 					break;					
 				default:
-					row = row + addStringCol(getColumnLetter(j+1)+currRow, r[j]);
+					row = [row, addStringCol(getColumnLetter(j+1)+currRow, cellData)].join('');
 			}
 		}
-		row = row + '</x:row>';
-		rows = rows + row;
+		row = [row, '</x:row>'].join('');
+		rows = [rows , row].join('');
 	}	
 	xlsx.remove(sheet.name);
 	xlsx.file(sheet.name, sheetFront + rows + sheetBack);
@@ -87,14 +93,14 @@ var addNumberCol = function(cellRef, value){
 	if (value===null)
 		return "";
 	else
-		return '<x:c r="'+cellRef+'" s="0" t="n"><x:v>'+value+'</x:v></x:c>';
+		return ['<x:c r="',cellRef,'" s="0" t="n"><x:v>',value,'</x:v></x:c>'].join('');
 };
 
 var addDateCol = function(cellRef, value){
 	if (value===null)
 		return "";
 	else
-		return '<x:c r="'+cellRef+'" s="1" t="n"><x:v>'+value+'</x:v></x:c>';
+		return ['<x:c r="',cellRef,'" s="1" t="n"><x:v>',value,'</x:v></x:c>'].join('');
 };
 
 var addBoolCol = function(cellRef, value){
@@ -104,7 +110,7 @@ var addBoolCol = function(cellRef, value){
 	  value = 1
 	} else
 	  value = 0;
-	return '<x:c r="'+cellRef+'" s="0" t="b"><x:v>'+value+'</x:v></x:c>';
+	return ['<x:c r="',cellRef,'" s="0" t="b"><x:v>',value,'</x:v></x:c>'].join('');
 };
 var addStringCol = function(cellRef, value){
 	if (value===null)
@@ -116,14 +122,14 @@ var addStringCol = function(cellRef, value){
 	if (shareStrings.indexOf(value) < 0){
 		shareStrings.push(value);
 	}
-	return '<x:c r="'+cellRef+'" s="0" t="s"><x:v>'+shareStrings.indexOf(value)+'</x:v></x:c>';
+	return ['<x:c r="',cellRef,'" s="0" t="s"><x:v>',shareStrings.indexOf(value),'</x:v></x:c>'].join('');
 };
 
 var convertShareStrings = function(){
-	var r = "";
-	for (var i=0;i<shareStrings.length;i++)
+	var r = "", i;
+	for (i=0;i<shareStrings.length;i++)
 	{	
-		r = r + "<x:si><x:t>"+shareStrings[i]+"</x:t></x:si>";
+		r = [r , "<x:si><x:t>",shareStrings[i],"</x:t></x:si>"].join('');
 	}
 	return r;
 };
