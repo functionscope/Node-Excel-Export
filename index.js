@@ -14,7 +14,7 @@ var sheetFront = '<?xml version="1.0" encoding="utf-8"?><x:worksheet xmlns:r="ht
 var sheetBack = '</x:sheetData><x:printOptions horizontalCentered="0" verticalCentered="0" headings="0" gridLines="0" /><x:pageMargins left="0.75" right="0.75" top="0.75" bottom="0.5" header="0.5" footer="0.75" /><x:pageSetup paperSize="1" scale="100" pageOrder="downThenOver" orientation="default" blackAndWhite="0" draft="0" cellComments="none" errors="displayed" /><x:headerFooter /><x:tableParts count="0" /></x:worksheet>';
 var sharedStringsFront = '<?xml version="1.0" encoding="UTF-8"?><x:sst xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main" uniqueCount="$count" count="$count">';
 var sharedStringsBack = '</x:sst>';
-var shareStrings;
+var shareStrings, convertedShareStrings;
 
 exports.executeAsync = function(config, callBack){
 	return process.nextTick(function(){
@@ -25,32 +25,36 @@ exports.executeAsync = function(config, callBack){
 
 exports.execute = function(config){
 	var cols = config.cols,
-		data = config.rows;
+		data = config.rows,
+    colsLength = cols.length;
 	
 	var xlsx = new JSZip(templateXLSX, { base64: true, checkCRC32: false }),
 		sheet = xlsx.file("xl/worksheets/sheet.xml"),
 		sharedStringsXml = xlsx.file("xl/sharedStrings.xml"),
 		rows = "",
-		row ="";
+		row ="",
+    k;
 	
 	shareStrings = new Array();
+  convertedShareStrings = "";
 	//first row for column caption
-	row = ['<x:row r="1" spans="1:', cols.length , '">'].join('');
-  var k;
-	for (k=0; k < cols.length; k++)
+	row = '<x:row r="1" spans="1:'+ colsLength + '">';
+	for (k=0; k < colsLength; k++)
 	{
-		row = [row,  addStringCol(getColumnLetter(k+1)+1, cols[k].caption)].join('');
+		row += addStringCol(getColumnLetter(k+1)+1, cols[k].caption);
 	}
-	row = [row , '</x:row>'].join('');
-	rows = [rows , row].join('');	
+	row += '</x:row>';
+	rows += row;	
 	
 	//fill in data
-  var i, j, r, cellData;
-	for (i=0;i<data.length;i++)
+  var i, j, r, cellData,
+    dataLength = data.length;
+    
+	for (i=0;i<dataLength;i++)
 	{
 		r = data[i], currRow = i+2;
-		row = ['<x:row r="',currRow,'" spans="1:', cols.length , '">'].join('');
-		for (j=0; j<cols.length; j++)
+		row = '<x:row r="' + currRow +'" spans="1:'+ colsLength + '">';
+		for (j=0; j < colsLength; j++)
 		{
       cellData = r[j];
       if (typeof cols[j].beforeCellWrite === 'function')
@@ -59,20 +63,20 @@ exports.execute = function(config){
 			switch(cols[j].type)
 			{
 				case 'number':
-					row = [row, addNumberCol(getColumnLetter(j+1)+currRow, cellData)].join('');
+					row += addNumberCol(getColumnLetter(j+1)+currRow, cellData);
 					break;
 				case 'date':
-					row = [row, addDateCol(getColumnLetter(j+1)+currRow, cellData)].join('');
+					row += addDateCol(getColumnLetter(j+1)+currRow, cellData);
 					break;
 				case 'bool':
-					row = [row, addBoolCol(getColumnLetter(j+1)+currRow, cellData)].join('');
+					row += addBoolCol(getColumnLetter(j+1)+currRow, cellData);
 					break;					
 				default:
-					row = [row, addStringCol(getColumnLetter(j+1)+currRow, cellData)].join('');
+					row += addStringCol(getColumnLetter(j+1)+currRow, cellData);
 			}
 		}
-		row = [row, '</x:row>'].join('');
-		rows = [rows , row].join('');
+		row += '</x:row>';
+		rows += row;
 	}	
 	xlsx.remove(sheet.name);
 	xlsx.file(sheet.name, sheetFront + rows + sheetBack);
@@ -80,27 +84,26 @@ exports.execute = function(config){
 	{
 		xlsx.remove(sharedStringsXml.name);
 		sharedStringsFront = sharedStringsFront.replace(/\$count/g, shareStrings.length);
-		xlsx.file(sharedStringsXml.name, sharedStringsFront + convertShareStrings() + sharedStringsBack);
+		xlsx.file(sharedStringsXml.name, (sharedStringsFront + convertedShareStrings + sharedStringsBack));
 	}
-	
-	var r = xlsx.generate({ base64: false, compression: "DEFLATE" });
+	var results = xlsx.generate({ base64: false, compression: "DEFLATE" });
 	delete xlsx;
 	delete shareStrings;
-	return r;
+	return results;
 }
 
 var addNumberCol = function(cellRef, value){
 	if (value===null)
 		return "";
 	else
-		return ['<x:c r="',cellRef,'" s="0" t="n"><x:v>',value,'</x:v></x:c>'].join('');
+		return '<x:c r="'+cellRef+'" s="0" t="n"><x:v>'+value+'</x:v></x:c>';
 };
 
 var addDateCol = function(cellRef, value){
 	if (value===null)
 		return "";
 	else
-		return ['<x:c r="',cellRef,'" s="1" t="n"><x:v>',value,'</x:v></x:c>'].join('');
+		return '<x:c r="'+cellRef+'" s="1" t="n"><x:v>'+value+'</x:v></x:c>';
 };
 
 var addBoolCol = function(cellRef, value){
@@ -110,7 +113,7 @@ var addBoolCol = function(cellRef, value){
 	  value = 1
 	} else
 	  value = 0;
-	return ['<x:c r="',cellRef,'" s="0" t="b"><x:v>',value,'</x:v></x:c>'].join('');
+	return '<x:c r="'+cellRef+'" s="0" t="b"><x:v>'+value+'</x:v></x:c>';
 };
 var addStringCol = function(cellRef, value){
 	if (value===null)
@@ -118,20 +121,12 @@ var addStringCol = function(cellRef, value){
   if (typeof value ==='string'){
     value = value.replace(/&/g, "&amp;").replace(/'/g, "&apos;").replace(/>/g, "&gt;").replace(/</g, "&lt;");
   }
-  
-	if (shareStrings.indexOf(value) < 0){
-		shareStrings.push(value);
+  var i = shareStrings.indexOf(value);
+	if ( i< 0){
+		i = shareStrings.push(value) -1;
+    convertedShareStrings = convertedShareStrings+ "<x:si><x:t>"+value+"</x:t></x:si>";
 	}
-	return ['<x:c r="',cellRef,'" s="0" t="s"><x:v>',shareStrings.indexOf(value),'</x:v></x:c>'].join('');
-};
-
-var convertShareStrings = function(){
-	var r = "", i;
-	for (i=0;i<shareStrings.length;i++)
-	{	
-		r = [r , "<x:si><x:t>",shareStrings[i],"</x:t></x:si>"].join('');
-	}
-	return r;
+	return '<x:c r="'+cellRef+'" s="0" t="s"><x:v>'+i+'</x:v></x:c>';
 };
 
 var getColumnLetter = function(col){
