@@ -3,7 +3,8 @@
 A simple node.js module for exporting data set to Excel xlsx file.
 
 ## Using excel-export ##
-Setup configuration object before passing in the execute method. **cols** is an array for column definition. Column definition should have caption and type properties. beforeCellWrite callback is optional. beforeCellWrite is called with row and cell data.  The return value from beforeCellWrite is what get written to the cell . Supported valid types are string, date, bool and number.  **rows** is the data to be export. It is an Array of Array (row). Each row should be the same length of cols. 
+Setup configuration object before passing it into the execute method. **cols** is an array for column definition. Column definition should have caption and type properties while width property is not required. The unit for width property is character.  beforeCellWrite callback is optional. beforeCellWrite is called with row, cell data and option object (detail later).  The return value from beforeCellWrite is what get written to the cell.  Supported valid types are string, date, bool and number.  **rows** is the data to be export. It is an Array of Array (row). Each row should be the same length of cols.  If you want to style the spreadsheet, a valid excel style xml file is needed.  An easy to way to get style xml file is to unzip an xlsx file with the style desired and copy out the styles.xml file. conf.stylesXmlFile is to specify the relative path and file name of the xml file.  Google for "spreadsheetml style" to find more detail on styling spreadsheet.  The 
+
 
     var express = require('express');
 	var nodeExcel = require('excel-export');
@@ -11,18 +12,26 @@ Setup configuration object before passing in the execute method. **cols** is an 
 
 	app.get('/Excel', function(req, res){
 	  	var conf ={};
+		conf.stylesXmlFile = "styles.xml";
 	  	conf.cols = [{
 			caption:'string',
             type:'string',
             beforeCellWrite:function(row, cellData){
 				 return cellData.toUpperCase();
-			}
+			},
+            width:28.7109375
 		},{
 			caption:'date',
 			type:'date',
-			beforeCellWrite:function(row, cellData){
+			beforeCellWrite:function(){
 				var originDate = new Date(Date.UTC(1899, 12, 29));
-				return function(row, cellData){
+				return function(row, cellData, eOpt){
+              		if (eOpt.rowNum%2){
+                		eOpt.styleIndex = 1;
+              		}  
+              		else{
+                		eOpt.styleIndex = 2;
+              		}
 				  return (cellData - originDate) / (24 * 60 * 60 * 1000);
 				} 
 			}()
