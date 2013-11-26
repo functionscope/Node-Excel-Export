@@ -1,6 +1,6 @@
 {
   "name": "excel-export",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "Simple data set export to Excel xlsx file",
   "main": "index.js",
   "scripts": {
