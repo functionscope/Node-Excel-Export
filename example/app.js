@@ -18,7 +18,7 @@ app.get('/Excel', function(req, res){
         caption:'date',
         type:'date',
         beforeCellWrite:function(){
-            var originDate = new Date(Date.UTC(1899, 12, 29));
+            var originDate = new Date(Date.UTC(1899,11,30));
             return function(row, cellData, eOpt){
               // uncomment it for style example 
               // if (eOpt.rowNum%2){

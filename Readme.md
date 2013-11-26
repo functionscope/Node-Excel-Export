@@ -25,7 +25,7 @@ Setup configuration object before passing it into the execute method.  **cols** 
 			caption:'date',
 			type:'date',
 			beforeCellWrite:function(){
-				var originDate = new Date(Date.UTC(1899, 12, 29));
+				var originDate = new Date(Date.UTC(1899,11,30));
 				return function(row, cellData, eOpt){
               		if (eOpt.rowNum%2){
                 		eOpt.styleIndex = 1;
