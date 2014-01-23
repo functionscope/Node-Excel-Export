@@ -3,7 +3,7 @@
 A simple node.js module for exporting data set to Excel xlsx file.
 
 ## Using excel-export ##
-Setup configuration object before passing it into the execute method.  **cols** is an array for column definition.  Column definition should have caption and type properties while width property is not required.  The unit for width property is character.   **beforeCellWrite** callback is optional.  beforeCellWrite is invoked with row, cell data and option object (eOpt detail later) parameters.  The return value from beforeCellWrite is what get written into the cell.  Supported valid types are string, date, bool and number.  **rows** is the data to be exported. It is an Array of Array (row). Each row should be the same length as cols.  Styling is optional.  However, if you want to style your spreadsheet, a valid excel styles xml file is needed.  An easy way to get a styles xml file is to unzip an existing xlsx file which has the desired styles and copy out the styles.xml file. Use **stylesXmlFile** property of configuartion object to specify the relative path and file name of the xml file.  Google for "spreadsheetml style" to learn more detail on styling spreadsheet.  eOpt in beforeCellWrite callback contains rowNum for current row number. eOpt.styleIndex should be a valid zero based index from cellXfs tag of the selected styles xml file.
+Setup configuration object before passing it into the execute method.  **cols** is an array for column definition.  Column definition should have caption and type properties while width property is not required.  The unit for width property is character.   **beforeCellWrite** callback is optional.  beforeCellWrite is invoked with row, cell data and option object (eOpt detail later) parameters.  The return value from beforeCellWrite is what get written into the cell.  Supported valid types are string, date, bool and number.  **rows** is the data to be exported. It is an Array of Array (row). Each row should be the same length as cols.  Styling is optional.  However, if you want to style your spreadsheet, a valid excel styles xml file is needed.  An easy way to get a styles xml file is to unzip an existing xlsx file which has the desired styles and copy out the styles.xml file. Use **stylesXmlFile** property of configuartion object to specify the relative path and file name of the xml file.  Google for "spreadsheetml style" to learn more detail on styling spreadsheet.  eOpt in beforeCellWrite callback contains rowNum for current row number. eOpt.styleIndex should be a valid zero based index from cellXfs tag of the selected styles xml file.  eOpt.cellType is default to the type value specified in column definition.  However, in some scenario you might want to change it for different format. 
 
 
 
@@ -33,7 +33,11 @@ Setup configuration object before passing it into the execute method.  **cols** 
               		else{
                 		eOpt.styleIndex = 2;
               		}
-				  return (cellData - originDate) / (24 * 60 * 60 * 1000);
+                    if (cellData === null){
+                      eOpt.cellType = 'string';
+                      return 'N/A';
+                    } else
+                      return (cellData - originDate) / (24 * 60 * 60 * 1000);
 				} 
 			}()
 		},{
@@ -46,7 +50,8 @@ Setup configuration object before passing it into the execute method.  **cols** 
 	  	conf.rows = [
 	 		['pi', new Date(Date.UTC(2013, 4, 1)), true, 3.14],
 	 		["e", new Date(2012, 4, 1), false, 2.7182],
- 	 		["M&M<>'", new Date(Date.UTC(2013, 6, 9)), false, 1.2]   
+            ["M&M<>'", new Date(Date.UTC(2013, 6, 9)), false, 1.61803],
+            ["null date", null, true, 1.414]  
 	  	];
 	  	var result = nodeExcel.execute(conf);
 	  	res.setHeader('Content-Type', 'application/vnd.openxmlformats');

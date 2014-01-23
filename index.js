@@ -65,7 +65,7 @@ exports.execute = function(config){
 	rows += row;	
 	
 	//fill in data
-  var i, j, r, cellData, currRow,
+  var i, j, r, cellData, currRow, cellType,
     dataLength = data.length;
     
 	for (i=0;i<dataLength;i++)
@@ -76,13 +76,15 @@ exports.execute = function(config){
 		{
       styleIndex = null;
       cellData = r[j];
+      cellType = cols[j].type;
       if (typeof cols[j].beforeCellWrite === 'function'){
-        var e ={rowNum: currRow, styleIndex: null};
+        var e ={rowNum: currRow, styleIndex: null, cellType: cellType};
         cellData = cols[j].beforeCellWrite(r, cellData, e);
         styleIndex = e.styleIndex || styleIndex;
+        cellType = e.cellType;
         delete e;
       }     
-			switch(cols[j].type)
+			switch(cellType)
 			{
 				case 'number':
 					row += addNumberCol(getColumnLetter(j+1)+currRow, cellData, styleIndex);

@@ -13,7 +13,7 @@ app.get('/Excel', function(req, res){
         beforeCellWrite:function(row, cellData){
              return cellData.toUpperCase();
         }
-        , width:28.7109375
+        , width:15
     },{
         caption:'date',
         type:'date',
@@ -27,7 +27,11 @@ app.get('/Excel', function(req, res){
               // else{
                 // eOpt.styleIndex = 2;
               // }
-              return (cellData - originDate) / (24 * 60 * 60 * 1000);
+              if (cellData === null){
+                eOpt.cellType = 'string';
+                return 'N/A';
+              } else
+                return (cellData - originDate) / (24 * 60 * 60 * 1000);
             } 
         }()
         , width:20.85
@@ -37,12 +41,13 @@ app.get('/Excel', function(req, res){
     },{
         caption:'number',
         type:'number',
-        width:10.42578125 
+        width:30
     }];
     conf.rows = [
-      ['pi', new Date(Date.UTC(2013, 4, 1)), true, 3.14],
+      ['pi', new Date(Date.UTC(2013, 4, 1)), true, 3.14159],
       ["e", new Date(2012, 4, 1), false, 2.7182],
-      ["M&M<>'", new Date(Date.UTC(2013, 6, 9)), false, 1.2]   
+      ["M&M<>'", new Date(Date.UTC(2013, 6, 9)), false, 1.61803],
+      ["null date", null, true, 1.414]
     ];
   var result = nodeExcel.execute(conf);
   res.setHeader('Content-Type', 'application/vnd.openxmlformats');
