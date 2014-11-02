@@ -1,6 +1,33 @@
-var express = require('express');
-var nodeExcel = require('excel-export');
-var app = express();
+var express = require('express'),
+    nodeExcel = require('excel-export'),
+    uuid = require('node-uuid'),
+    app = express();
+
+app.get('/Large', function(req, res){
+  var conf ={};
+  conf.cols = [];
+  for (i = 0; i < 100; i++){
+    conf.cols.push({
+      caption:'string ' + i,
+      captionStyleIndex: 1,        
+      type:'string'      
+    });    
+  }
+  conf.rows = [];
+  for (j = 0; j < 1000; j++){
+    var row = [];
+    for (k = 0; k < 100; k++){
+      row.push(uuid.v4());  
+    } 
+    conf.rows.push(row); 
+    conf.rows.push(row);    
+  }
+  var result = nodeExcel.execute(conf);
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats');
+  res.setHeader("Content-Disposition", "attachment; filename=" + "Large.xlsx");
+  res.end(result, 'binary');    
+
+});
 
 app.get('/Excel', function(req, res){
     var conf ={};

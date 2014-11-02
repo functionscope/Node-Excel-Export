@@ -4,8 +4,9 @@
   "version": "0.3.1",
   "private": true,
   "dependencies": {
+    "excel-export": "0.3.9",
     "express": "3.x",
-    "node-zip":"1.x",
-    "excel-export":"0.3.9"
+    "node-uuid": "^1.4.1",
+    "node-zip": "1.x"
   }
 }

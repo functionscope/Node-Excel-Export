@@ -1,5 +1,6 @@
 require('node-zip');
-var fs = require('fs');
+var fs = require('fs'),
+  SortedMap = require('collections/sorted-map');
 
 Date.prototype.getJulian = function() {
 	return Math.floor((this / 86400000) -
@@ -48,7 +49,7 @@ exports.execute = function(config){
     }
   }
   
-	shareStrings = new Array();
+	shareStrings = new SortedMap();
   convertedShareStrings = "";
 	//first row for column caption
 	row = '<x:row r="1" spans="1:'+ colsLength + '">';
@@ -167,9 +168,10 @@ var addStringCol = function(cellRef, value, styleIndex){
   if (typeof value ==='string'){
     value = value.replace(/&/g, "&amp;").replace(/'/g, "&apos;").replace(/>/g, "&gt;").replace(/</g, "&lt;");
   }
-  var i = shareStrings.indexOf(value);
+  var i = shareStrings.get(value, -1);
 	if ( i< 0){
-		i = shareStrings.push(value) -1;
+    i = shareStrings.length;
+  	shareStrings.add(value, i);
     convertedShareStrings = convertedShareStrings+ "<x:si><x:t>"+value+"</x:t></x:si>";
 	}
 	return '<x:c r="'+cellRef+'" s="'+ styleIndex + '" t="s"><x:v>'+i+'</x:v></x:c>';
