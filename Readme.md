@@ -61,3 +61,7 @@ Setup configuration object before passing it into the execute method.  **cols** 
 
 	app.listen(3000);
 	console.log('Listening on port 3000');
+
+## Running tests ##  
+To run tests,  
+` npm test `
