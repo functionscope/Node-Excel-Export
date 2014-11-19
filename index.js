@@ -75,13 +75,13 @@ exports.execute = function(config){
 		row = '<x:row r="' + currRow +'" spans="1:'+ colsLength + '">';
 		for (j=0; j < colsLength; j++)
 		{
-      styleIndex = null;
+      styleIndex = data[j].styleIndex || 0;
       cellData = r[j];
       cellType = cols[j].type;
       if (typeof cols[j].beforeCellWrite === 'function'){
         var e ={rowNum: currRow, styleIndex: null, cellType: cellType};
         cellData = cols[j].beforeCellWrite(r, cellData, e);
-        styleIndex = e.styleIndex || styleIndex;
+        styleIndex = styleIndex || e.styleIndex;
         cellType = e.cellType;
         delete e;
       }     
