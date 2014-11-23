@@ -27,17 +27,20 @@ describe('Simple Excel xlsx Export', function() {
 		});
 
 		it('returns xlsx for big data', function () {
+			var conf = {};
 
-			conf.col = [
+			conf.cols = [
 				{caption:'Text', type:'string'},
-				{caption:'Text 2', type:'string'}
+				{caption:'Text 2', type:'string'},
+				{caption:'Number', type:'number'},
+				{caption:'Boolean', type:'bool'}
 			];
 
-			conf.rows = [
-				for(var i=0; i<10000; i++) {
-					['hello', 'world'];
-				}
-			];
+			conf.rows = [];
+
+			for(var i=0; i<10000; i++) {
+				conf.rows.push(['hello', 'world', 32000.4567, true]);
+			}
 
 			var result = nodeExcel.execute(conf), fs = require('fs');
 			fs.writeFileSync('f.xlsx', result, 'binary');
