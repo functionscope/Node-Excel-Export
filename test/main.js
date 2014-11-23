@@ -1,6 +1,7 @@
 // test/main.js
 var should = require('should');
 var nodeExcel = require('../index');
+var path = require('path');
 
 describe('Simple Excel xlsx Export', function() {
   describe('Export', function() {
@@ -26,14 +27,16 @@ describe('Simple Excel xlsx Export', function() {
 			fs.writeFileSync('d.xlsx', result, 'binary');	
 		});
 
-		it('returns xlsx for big data', function () {
+		it('returns xlsx for big data set', function () {
 			var conf = {};
 
+			conf.stylesXmlFile = path.resolve(__dirname, 'styles.xml');
+
 			conf.cols = [
-				{caption:'Text', type:'string'},
-				{caption:'Text 2', type:'string'},
-				{caption:'Number', type:'number'},
-				{caption:'Boolean', type:'bool'}
+				{caption:'Text', type:'string', captionStyleIndex: 1, styleIndex: 2},
+				{caption:'Text 2', type:'string', captionStyleIndex: 1, styleIndex: 2},
+				{caption:'Number', type:'number', captionStyleIndex: 1, styleIndex: 2},
+				{caption:'Boolean', type:'bool', captionStyleIndex: 1, styleIndex: 2}
 			];
 
 			conf.rows = [];
