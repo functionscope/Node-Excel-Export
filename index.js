@@ -75,7 +75,7 @@ exports.execute = function(config){
 		row = '<x:row r="' + currRow +'" spans="1:'+ colsLength + '">';
 		for (j=0; j < colsLength; j++)
 		{
-      styleIndex = data[j].styleIndex || 0;
+      styleIndex = cols[j].styleIndex || 0;
       cellData = r[j];
       cellType = cols[j].type;
       if (typeof cols[j].beforeCellWrite === 'function'){
