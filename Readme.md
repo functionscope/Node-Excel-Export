@@ -1,3 +1,6 @@
+https://travis-ci.org/newscred/Node-Excel-Export.svg?branch=master  
+
+
 # excel-export #
 
 A simple node.js module for exporting data set to Excel xlsx file.
