@@ -25,5 +25,22 @@ describe('Simple Excel xlsx Export', function() {
 			    fs = require('fs');
 			fs.writeFileSync('d.xlsx', result, 'binary');	
 		});
+
+		it('returns xlsx for big data', function () {
+
+			conf.col = [
+				{caption:'Text', type:'string'},
+				{caption:'Text 2', type:'string'}
+			];
+
+			conf.rows = [
+				for(var i=0; i<10000; i++) {
+					['hello', 'world'];
+				}
+			];
+
+			var result = nodeExcel.execute(conf), fs = require('fs');
+			fs.writeFileSync('f.xlsx', result, 'binary');
+		});
   });
 });
