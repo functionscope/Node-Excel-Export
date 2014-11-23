@@ -1,4 +1,4 @@
-https://travis-ci.org/newscred/Node-Excel-Export.svg?branch=master  
+[![Build Status](https://travis-ci.org/newscred/Node-Excel-Export.svg?branch=master)](https://travis-ci.org/newscred/Node-Excel-Export)  
 
 
 # excel-export #
