@@ -1,6 +1,7 @@
 require('node-zip');
 var fs = require('fs'),
-  SortedMap = require('collections/sorted-map');
+    async = require('async'),
+    SortedMap = require('collections/sorted-map');
 
 Date.prototype.getJulian = function() {
 	return Math.floor((this / 86400000) -
@@ -15,30 +16,31 @@ var templateXLSX = "UEsDBBQAAAAIABN7eUK9Z10uOQEAADUEAAATAAAAW0NvbnRlbnRfVHlwZXNd
 var sheetFront = '<?xml version="1.0" encoding="utf-8"?><x:worksheet xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac"><x:sheetPr><x:outlinePr summaryBelow="1" summaryRight="1" /></x:sheetPr><x:sheetViews><x:sheetView tabSelected="0" workbookViewId="0" /></x:sheetViews><x:sheetFormatPr defaultRowHeight="15" />';
 var sheetBack = '<x:printOptions horizontalCentered="0" verticalCentered="0" headings="0" gridLines="0" /><x:pageMargins left="0.75" right="0.75" top="0.75" bottom="0.5" header="0.5" footer="0.75" /><x:pageSetup paperSize="1" scale="100" pageOrder="downThenOver" orientation="default" blackAndWhite="0" draft="0" cellComments="none" errors="displayed" /><x:headerFooter /><x:tableParts count="0" /></x:worksheet>';
 
-
 var sharedStringsFront = '<?xml version="1.0" encoding="UTF-8"?><x:sst xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main" uniqueCount="$count" count="$count">';
 var sharedStringsBack = '</x:sst>';
 var shareStrings, convertedShareStrings;
 
-exports.executeAsync = function(config, callBack){
-	return process.nextTick(function(){
-		var r = exports.execute(config);		
-		callBack(r);
-	});
+exports.executeAsync = function(config, callback){
+  async.series([
+    async.apply(exports.execute, config)
+  ], function (err, result) {
+    if (err) { return callback(err); }
+    return callback(null, result);
+  });
 };
 
 exports.execute = function(config){
 	var cols = config.cols,
-		data = config.rows,
-    colsLength = cols.length,
-	  xlsx = new JSZip(templateXLSX, { base64: true, checkCRC32: false }),
-		sheet = xlsx.file("xl/worksheets/sheet.xml"),
-		sharedStringsXml = xlsx.file("xl/sharedStrings.xml"),
-		rows = "",
-		row ="",
-    colsWidth = "",
-    styleIndex,
-    k;
+  		data = config.rows,
+      colsLength = cols.length,
+  	  xlsx = new JSZip(templateXLSX, { base64: true, checkCRC32: true }),
+  		sheet = xlsx.file("xl/worksheets/sheet.xml"),
+  		sharedStringsXml = xlsx.file("xl/sharedStrings.xml"),
+  		rows = "",
+  		row = "",
+      colsWidth = "",
+      styleIndex,
+      k;
 
   if (config.stylesXmlFile){
     var path = config.stylesXmlFile;

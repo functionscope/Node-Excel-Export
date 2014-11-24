@@ -49,4 +49,32 @@ describe('Simple Excel xlsx Export', function() {
 			fs.writeFileSync('f.xlsx', result, 'binary');
 		});
   });
+
+describe('Export Async', function() {
+		it('returns xlsx for big data set', function () {
+			var conf = {};
+
+			conf.stylesXmlFile = path.resolve(__dirname, 'styles.xml');
+
+			conf.cols = [
+				{caption:'Text', type:'string', captionStyleIndex: 1, styleIndex: 2},
+				{caption:'Text 2', type:'string', captionStyleIndex: 1, styleIndex: 2},
+				{caption:'Number', type:'number', captionStyleIndex: 1, styleIndex: 2},
+				{caption:'Boolean', type:'bool', captionStyleIndex: 1, styleIndex: 2}
+			];
+
+			conf.rows = [];
+
+			for(var i=0; i<10000; i++) {
+				conf.rows.push(['hello', 'world', 32000.4567, true]);
+			}
+
+			var result = nodeExcel.executeAsync(conf, function (err, sheet) {
+				should.not.exist(err);
+				should.exist(sheet);
+				return sheet;
+			}), fs = require('fs');
+			fs.writeFileSync('f.xlsx', result, 'binary');
+		});
+  });
 });
