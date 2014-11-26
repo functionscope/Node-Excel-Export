@@ -3,8 +3,5 @@ node_js:
   - "0.10"
 notifications:
   email:
-    recipients:
-      - riyadh@newscred.com
-      - plansquad@newscred.com
     on_success: always
     on_failure: always
