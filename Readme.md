@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/newscred/Node-Excel-Export.svg?branch=master)](https://travis-ci.org/newscred/Node-Excel-Export)  
+
+
 # excel-export #
 
 A simple node.js module for exporting data set to Excel xlsx file.
@@ -61,3 +64,7 @@ Setup configuration object before passing it into the execute method.  **cols** 
 
 	app.listen(3000);
 	console.log('Listening on port 3000');
+
+## Running tests ##  
+To run tests,  
+` npm test `

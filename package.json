@@ -15,7 +15,8 @@
   "license": "BSD",
   "dependencies": {
     "collections": "^1.2.1",
-    "node-zip": "1.x"
+    "node-zip": "1.x",
+    "async": "~0.9.0"
   },
   "devDependencies": {
     "mocha": "",
