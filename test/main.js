@@ -24,7 +24,7 @@ describe('Simple Excel xlsx Export', function() {
 			
 	    var result = nodeExcel.execute(conf),
 			    fs = require('fs');
-			fs.writeFileSync('d.xlsx', result, 'binary');	
+			fs.writeFileSync('test1.xlsx', result, 'binary');	
 		});
 
 		it('returns xlsx for big data set', function () {
@@ -46,7 +46,7 @@ describe('Simple Excel xlsx Export', function() {
 			}
 
 			var result = nodeExcel.execute(conf), fs = require('fs');
-			fs.writeFileSync('f.xlsx', result, 'binary');
+			fs.writeFileSync('test2.xlsx', result, 'binary');
 		});
   });
 
@@ -74,7 +74,7 @@ describe('Export Async', function() {
 				should.exist(sheet);
 				return sheet;
 			}), fs = require('fs');
-			fs.writeFileSync('f.xlsx', result, 'binary');
+			fs.writeFileSync('test3.xlsx', result, 'binary');
 		});
   });
 });
