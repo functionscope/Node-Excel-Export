@@ -31,8 +31,10 @@ app.get('/Large', function(req, res){
 
 app.get('/Excel', function(req, res){
     var conf ={};
-  // uncomment it for style example  
-  // conf.stylesXmlFile = "styles.xml";
+  //uncomment it for style example
+  //conf.stylesXmlFile = "styles.xml";
+  //uncomment it for rtl example
+  //conf.rtl = true;
     conf.cols = [{
         caption:'string',
         captionStyleIndex: 1,        
