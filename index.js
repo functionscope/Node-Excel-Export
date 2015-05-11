@@ -116,7 +116,7 @@ exports.execute = function(config){
 		sharedStringsFront = sharedStringsFront.replace(/\$count/g, shareStrings.length);
 		xlsx.file(sharedStringsXml.name, (sharedStringsFront + convertedShareStrings + sharedStringsBack));
 	}
-	for(var ii=0;ii<shareStrings.length;ii++){ text += shareStrings.get(ii) + " "}
+	
 	var results = xlsx.generate({ base64: false, compression: "DEFLATE" });
 	delete xlsx;
 	delete shareStrings;
