@@ -97,9 +97,10 @@ exports.executeAsync = function(config, callBack) {
 
 function generateSharedStringsFile(sharedStringsXml, xlsx){
 	if (shareStrings.length > 0) {
-		sharedStringsFront = sharedStringsFront.replace(/\$count/g, shareStrings.length);
-		xlsx.file(sharedStringsXml.name, (sharedStringsFront + convertedShareStrings + sharedStringsBack));
+		var sharedStringsFrontTmp = sharedStringsFront.replace(/\$count/g, shareStrings.length);
+		xlsx.file(sharedStringsXml.name, (sharedStringsFrontTmp + convertedShareStrings + sharedStringsBack));
 	}
+	convertedShareStrings = "";
 }
 
 exports.execute = function(config) {
