@@ -24,7 +24,7 @@ Sheet.prototype.generate = function(){
 	styleIndex,
   self = this,
 	k;
-	config.fileName = "xl/worksheets/" + (config.name || "sheet") + ".xml";
+	config.fileName = 'xl/worksheets/' + (config.name || "sheet").replace(/[*?\]\[\/\/]/g, '') + '.xml';
 	if (config.stylesXmlFile) {
 		var path = config.stylesXmlFile;
 		var styles = null;
@@ -39,7 +39,7 @@ Sheet.prototype.generate = function(){
 	var colStyleIndex;
 	for (k = 0; k < colsLength; k++) {
 		colStyleIndex = cols[k].captionStyleIndex || 0;
-		row += addStringCol(self, getColumnLetter(k + 1) + 1, cols[k].caption, colStyleIndex);
+		row += addStringCell(self, getColumnLetter(k + 1) + 1, cols[k].caption, colStyleIndex);
 		if (cols[k].width) {
 			colsWidth += '<col customWidth = "1" width="' + cols[k].width + '" max = "' + (k + 1) + '" min="' + (k + 1) + '"/>';
 		}
@@ -71,16 +71,16 @@ Sheet.prototype.generate = function(){
 			}
 			switch (cellType) {
 			case 'number':
-				row += addNumberCol(getColumnLetter(j + 1) + currRow, cellData, styleIndex);
+				row += addNumberCell(getColumnLetter(j + 1) + currRow, cellData, styleIndex);
 				break;
 			case 'date':
-				row += addDateCol(getColumnLetter(j + 1) + currRow, cellData, styleIndex);
+				row += addDateCell(getColumnLetter(j + 1) + currRow, cellData, styleIndex);
 				break;
 			case 'bool':
-				row += addBoolCol(getColumnLetter(j + 1) + currRow, cellData, styleIndex);
+				row += addBoolCell(getColumnLetter(j + 1) + currRow, cellData, styleIndex);
 				break;
 			default:
-				row += addStringCol(self, getColumnLetter(j + 1) + currRow, cellData, styleIndex);
+				row += addStringCell(self, getColumnLetter(j + 1) + currRow, cellData, styleIndex);
 			}
 		}
 		row += '</x:row>';
@@ -110,7 +110,7 @@ var endTag = function(tagName){
   return "</" + tagName + ">";
 };
 
-var addNumberCol = function(cellRef, value, styleIndex){
+var addNumberCell = function(cellRef, value, styleIndex){
   styleIndex = styleIndex || 0;
 	if (value===null)
 		return "";
@@ -118,7 +118,7 @@ var addNumberCol = function(cellRef, value, styleIndex){
 		return '<x:c r="'+cellRef+'" s="'+ styleIndex +'" t="n"><x:v>'+value+'</x:v></x:c>';
 };
 
-var addDateCol = function(cellRef, value, styleIndex){
+var addDateCell = function(cellRef, value, styleIndex){
   styleIndex = styleIndex || 1;
 	if (value===null)
 		return "";
@@ -126,7 +126,7 @@ var addDateCol = function(cellRef, value, styleIndex){
 		return '<x:c r="'+cellRef+'" s="'+ styleIndex +'" t="n"><x:v>'+value+'</x:v></x:c>';
 };
 
-var addBoolCol = function(cellRef, value, styleIndex){
+var addBoolCell = function(cellRef, value, styleIndex){
   styleIndex = styleIndex || 0;
 	if (value===null)
 		return "";
@@ -138,7 +138,7 @@ var addBoolCol = function(cellRef, value, styleIndex){
 };
 
 
-var addStringCol = function(sheet, cellRef, value, styleIndex){
+var addStringCell = function(sheet, cellRef, value, styleIndex){
   styleIndex = styleIndex || 0;
 	if (value===null)
 		return "";
