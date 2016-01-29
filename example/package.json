@@ -1,5 +1,5 @@
 {
-  "name": "Excel-export",
+  "name": "excel-export-example-app",
   "description": "Node Excel Export test app",
   "version": "0.3.1",
   "private": true,
