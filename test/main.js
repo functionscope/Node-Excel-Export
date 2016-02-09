@@ -54,7 +54,6 @@ describe('Simple Excel xlsx Export', function() {
 			for (var i = 0; i < 3; i++) {
 				conf = JSON.parse(JSON.stringify(conf));   //clone
         conf.name = 'sheet'+i;
-				//conf.name = 'sheet我要'+i;
 				confs.push(conf);
 			}
 			var result = nodeExcel.execute(confs),
