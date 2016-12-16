@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "mocha": "",
-    "should": ""
+    "should": "",
+    "standard": "^8.6.0"
   }
 }
