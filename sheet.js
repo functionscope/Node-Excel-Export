@@ -48,7 +48,7 @@ Sheet.prototype.generate = function () {
   rows += row
 
 	// fill in data
-  var i, j, r, cellData, currRow, cellType, dataLength = data.length
+  var i, j, r, cellData, currRow, cellType, el, dataLength = data.length
 
   for (i = 0; i < dataLength; i++) {
     r = data[i],
@@ -59,15 +59,14 @@ Sheet.prototype.generate = function () {
       cellData = r[j]
       cellType = cols[j].type
       if (typeof cols[j].beforeCellWrite === 'function') {
-        var e = {
+        el = {
           rowNum: currRow,
           styleIndex: null,
           cellType: cellType
         }
-				cellData = cols[j].beforeCellWrite(r, cellData, e)
-        styleIndex = e.styleIndex || styleIndex
-        cellType = e.cellType
-				delete e
+				cellData = cols[j].beforeCellWrite(r, cellData, el)
+        styleIndex = el.styleIndex || styleIndex
+        cellType = el.cellType
       }
       switch (cellType) {
         case 'number':
