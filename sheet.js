@@ -4,8 +4,6 @@ var sheetFront = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><x:work
 var sheetBack = ' <x:pageMargins left="0.75" right="0.75" top="0.75" bottom="0.5" header="0.5" footer="0.75" />'
 		+ ' <x:headerFooter /></x:worksheet>'
 
-var fs = require('fs')
-
 function Sheet (config, xlsx, shareStrings, convertedShareStrings) {
   this.config = config
   this.xlsx = xlsx
@@ -25,13 +23,9 @@ Sheet.prototype.generate = function () {
     self = this,
     k
   config.fileName = 'xl/worksheets/' + (config.name || 'sheet').replace(/[*?\]\[\/\/]/g, '') + '.xml'
-  if (config.stylesXmlFile) {
-    var path = config.stylesXmlFile
-    var styles = null
-    styles = fs.readFileSync(path, 'utf8')
-    if (styles) {
-      xlsx.file('xl/styles.xml', styles)
-    }
+  if (config.stylesXml) {
+    var styles = config.stylesXml
+		xlsx.file('xl/styles.xml', styles)
   }
 
 	// first row for column caption
