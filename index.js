@@ -1,7 +1,6 @@
 require('node-zip')
 var fs = require('fs'),
-  Sheet = require('./sheet'),
-  SortedMap = require('collections/sorted-map')
+  Sheet = require('./sheet')
 
 Date.prototype.getJulian = function () {
   return Math.floor((this / 86400000) - (this.getTimezoneOffset() / 1440) + 2440587.5)
@@ -79,8 +78,8 @@ function generateWorkbook (configs, xlsx) {
 }
 
 function generateSharedStringsFile (xlsx, shareStrings) {
-  if (shareStrings.length > 0) {
-    var sharedStringsFrontTmp = sharedStringsFront.replace(/\$count/g, shareStrings.length)
+  if (shareStrings.size > 0) {
+    var sharedStringsFrontTmp = sharedStringsFront.replace(/\$count/g, shareStrings.size)
     xlsx.file('xl/sharedStrings.xml', (sharedStringsFrontTmp + convertedShareStrings + sharedStringsBack))
   }
   convertedShareStrings = ''
@@ -98,7 +97,7 @@ exports.execute = function (config) {
     base64: true,
     checkCRC32: false
   })
-  var shareStrings = new SortedMap()
+  var shareStrings = new Map()
   convertedShareStrings = ''
 
   var configs = []
