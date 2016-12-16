@@ -77,13 +77,6 @@ function generateSharedStringsFile (xlsx, shareStrings) {
   convertedShareStrings = ''
 }
 
-exports.executeAsync = function (config, callBack) {
-  return process.nextTick(function () {
-    var r = exports.execute(config)
-    callBack(r)
-  })
-}
-
 exports.execute = function (config) {
   var xlsx = new JSZip(templateXLSX, {
     base64: true,
@@ -103,10 +96,9 @@ exports.execute = function (config) {
   generateRel(configs, xlsx)
   generateContentType(configs, xlsx)
   generateSharedStringsFile(xlsx, shareStrings)
-  var results = xlsx.generate({
+  return xlsx.generate({
     base64: false,
     compression: 'DEFLATE'
   })
-  return results
 }
 
