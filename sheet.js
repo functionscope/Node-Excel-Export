@@ -1,3 +1,5 @@
+module.exports = Sheet
+
 var sheetFront = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><x:worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main">'
 		+ ' <x:sheetPr/><x:sheetViews><x:sheetView tabSelected="1" workbookViewId="0" /></x:sheetViews>'
 		+ ' <x:sheetFormatPr defaultRowHeight="15" />'
@@ -84,9 +86,6 @@ Sheet.prototype.generate = function () {
   }
   xlsx.file(config.fileName, sheetFront + '<x:sheetData>' + rows + '</x:sheetData>' + sheetBack)
 }
-
-module.exports = Sheet
-
 var startTag = function (obj, tagName, closed) {
   var result = '<' + tagName, p
   for (p in obj) {
@@ -135,7 +134,6 @@ var addStringCell = function (sheet, cellRef, value, styleIndex) {
   if (typeof value === 'string') {
     value = value.replace(/&/g, '&amp;').replace(/'/g, '&apos;').replace(/>/g, '&gt;').replace(/</g, '&lt;')
   }
-	// TODO there is no default value in js map
   var i
   if (!sheet.shareStrings.has(value)) {
     i = -1
@@ -152,7 +150,7 @@ var addStringCell = function (sheet, cellRef, value, styleIndex) {
 
 var getColumnLetter = function (col) {
   if (col <= 0) { throw 'col must be more than 0' }
-  var array = new Array()
+  var array = []
   while (col > 0) {
     var remainder = col % 26
     col /= 26
