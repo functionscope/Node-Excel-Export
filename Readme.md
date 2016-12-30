@@ -74,3 +74,5 @@ Easiest way to use it in the browser is using buffer. Do npm install buffer
 	var blob = new Blob([new Buffer(result, 'binary')], {type: 'application/vnd.openxmlformats'})
 	saveAs(blob, 'excel.xlsx')
 
+### Disclaimer ###
+This package is based in the [original](https://github.com/functionscope/Node-Excel-Export) but ported to support browser and avoid global side effects.

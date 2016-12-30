@@ -1,12 +1,12 @@
 {
-  "name": "excel-export",
-  "version": "0.5.1",
-  "description": "Simple data set export to Excel xlsx file",
+  "name": "js-excel",
+  "version": "1.0.0",
+  "description": "Data to excel in the browser and the server",
   "main": "index.js",
   "scripts": {
     "test": "mocha test/main"
   },
-  "repository": "https://github.com/functionscope/Node-Excel-Export",
+  "repository": "https://github.com/furstenheim/js-excel",
   "keywords": [
     "Excel",
     "xlsx"
