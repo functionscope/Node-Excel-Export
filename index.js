@@ -35,7 +35,7 @@ var shareStrings, convertedShareStrings;
 function generateMultiSheets(configs, xlsx) {
 	var i = 1;
 	configs.forEach(function(config) {
-		config.name = config.name ? config.name : ('sheet'+i);
+		config.name = config.name ? encodeURIComponent(config.name) : ('sheet'+i);
 		i++;
     var sheet = new Sheet(config, xlsx, shareStrings, convertedShareStrings);
 		sheet.generate();
@@ -62,16 +62,16 @@ function generateRel(configs,xlsx) {
 	workbook += relBack;
 	xlsx.file('xl/_rels/workbook.xml.rels', workbook);
 	xlsx.file('_rels/.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-			  + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' 
-			  + '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>' 
+			  + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+			  + '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>'
 			  + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>');
 }
 
 function generateWorkbook(configs,xlsx) {
 	var workbook = sheetsFront;
-	var i = 1;	
+	var i = 1;
 	configs.forEach( function(config) {
-		workbook += '<sheet name="'+ config.name + '" sheetId="' + i +'" r:id="rId' + i + '"/>';
+		workbook += '<sheet name="'+ decodeURIComponent(config.name) + '" sheetId="' + i +'" r:id="rId' + i + '"/>';
 		i++;
 	});
 	workbook += sheetsBack;
@@ -99,8 +99,8 @@ exports.execute = function(config) {
 		checkCRC32: false
 	});
 	shareStrings = new SortedMap();
-	convertedShareStrings = "";  
-  
+	convertedShareStrings = "";
+
 	var configs = [];
 	if (config instanceof Array) {
 		configs = config;
@@ -110,7 +110,7 @@ exports.execute = function(config) {
 	generateMultiSheets(configs, xlsx);
 	generateWorkbook(configs, xlsx);
 	generateRel(configs,xlsx) ;
-	generateContentType(configs, xlsx); 
+	generateContentType(configs, xlsx);
 	generateSharedStringsFile(xlsx);
 	var results = xlsx.generate({
 		base64: false,
